@@ -37,7 +37,7 @@ function App() {
         fabricRef.current.clear();
         setActiveElement(defaultTextElement);
         break;
-      
+
       case "delete":
         handleDelete(fabricRef.current);
         setActiveElement(defaultTextElement);
@@ -107,7 +107,7 @@ function App() {
 
   const isActive = (value) =>
     (activeElement && activeElement.value === value);
-  
+
   return (
     <div className="flex flex-col justify-center items-center">
       <div className="h-20 w-full bg-slate-600 flex items-center justify-around">
@@ -139,7 +139,7 @@ function App() {
           </ul>
         </div>
         <div>
-            <ul className="flex fexl-row space-x-6">
+          <ul className="flex fexl-row space-x-6">
             {
               imageElements.map((item) => (
                 <li key={item.name}
@@ -166,9 +166,17 @@ function App() {
           </ul>
         </div>
       </div>
-      <div className="h-[610px] w-full bg-yellow-600" id="canvas">
-        <canvas ref={canvasRef} />
+      <div className="w-full relative">
+        <img
+          src="/assets/mousepad.png"
+          alt="mousepad"
+          className=" absolute -top-7 left-[380px] w-[630px] h-[630px]"
+        />
+        <div className="h-[610px] w-full bg-yellow-600" id="canvas">
+          <canvas ref={canvasRef} />
+        </div>
       </div>
+
       <input
         type="file"
         className="hidden"

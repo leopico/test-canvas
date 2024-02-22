@@ -51,8 +51,20 @@ export const handleImageUpload = ({
   reader.onload = () => {
     fabric.Image.fromURL(reader.result, (img) => {
       
-      img.scaleToWidth(300);
-      img.scaleToHeight(300);
+      img.scaleToWidth(400);
+      img.scaleToHeight(400);
+
+      const clipPath = new fabric.Rect({
+        width: img.width,
+        height: img.height,
+        rx: 40,
+        ry: 40, 
+        originX: 'center',
+        originY: 'center',
+      });
+
+      img.clipPath = clipPath;
+     
 
       canvas.current.add(img);
 
