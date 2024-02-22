@@ -25,3 +25,44 @@ export const createSpecificShape = (
       return null;
   }
 };
+
+export const handleDelete = (canvas) => {
+  const activeObjects = canvas.getActiveObjects();
+  if (!activeObjects || activeObjects.length === 0) return;
+
+  if (activeObjects.length > 0) {
+    activeObjects.forEach((obj) => {
+      if (!obj.objectId) return;
+      canvas.remove(obj);
+    });
+  }
+
+  canvas.discardActiveObject();
+  canvas.requestRenderAll();
+};
+
+export const handleImageUpload = ({
+  file,
+  canvas,
+  shapeRef,
+}) => {
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    fabric.Image.fromURL(reader.result, (img) => {
+      
+      img.scaleToWidth(300);
+      img.scaleToHeight(300);
+
+      canvas.current.add(img);
+
+      img.objectId = uuidv4();
+
+      shapeRef.current = img;
+
+      canvas.current.requestRenderAll();
+    });
+  };
+
+  reader.readAsDataURL(file);
+};

@@ -7,7 +7,8 @@ import {
   handleResize,
   initializeFabric
 } from "./libs/canvas";
-import { defaultTextElement, textElements } from "./constants";
+import { defaultTextElement, imageElements, textElements } from "./constants";
+import { handleDelete, handleImageUpload } from "./libs/shapes";
 
 
 function App() {
@@ -16,8 +17,10 @@ function App() {
   const shapeRef = useRef(null);
   const selectedShapeRef = useRef(null);
   const activeObjectRef = useRef(null);
+  const imageInputRef = useRef(null);
 
   // console.log(selectedShapeRef.current);
+
 
   const [activeElement, setActiveElement] = useState({
     icon: "/assets/text.svg",
@@ -29,17 +32,25 @@ function App() {
   const handleActiveElment = (elem) => {
     setActiveElement(elem);
 
-    switch (elem?.value) {
+    switch (elem.value) {
       case 'reset':
         fabricRef.current.clear();
         setActiveElement(defaultTextElement);
         break;
+      
+      case "delete":
+        handleDelete(fabricRef.current);
+        setActiveElement(defaultTextElement);
+        break;
+
+      case "image":
+        imageInputRef.current.click();
+        break;
 
       default:
+        selectedShapeRef.current = elem.value;
         break;
     }
-
-    selectedShapeRef.current = elem?.value;
   };
 
   useEffect(() => {
@@ -82,11 +93,21 @@ function App() {
       handleResize({ fabricRef })
     });
 
+    return () => {
+      canvas.dispose();
+
+      window.removeEventListener("resize", () => {
+        handleResize({
+          canvas: null,
+        });
+      });
+    }
+
   }, [canvasRef]);
 
   const isActive = (value) =>
     (activeElement && activeElement.value === value);
-
+  
   return (
     <div className="flex flex-col justify-center items-center">
       <div className="h-20 w-full bg-slate-600 flex items-center justify-around">
@@ -117,11 +138,51 @@ function App() {
             }
           </ul>
         </div>
-        <div>2</div>
+        <div>
+            <ul className="flex fexl-row space-x-6">
+            {
+              imageElements.map((item) => (
+                <li key={item.name}
+                  onClick={() => {
+                    if (Array.isArray(item.value)) return;
+                    handleActiveElment(item);
+                  }}
+                >
+                  <button
+                    className={
+                      `w-10 h-10 bg-slate-500 hover:bg-red-400 rounded
+                        ${isActive(item.value) && "bg-red-400"}
+                      `}
+                  >
+                    <img
+                      src={item.icon}
+                      alt={item.name}
+                      className="object-cover p-3"
+                    />
+                  </button>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </div>
       <div className="h-[610px] w-full bg-yellow-600" id="canvas">
         <canvas ref={canvasRef} />
       </div>
+      <input
+        type="file"
+        className="hidden"
+        ref={imageInputRef}
+        accept="image/*"
+        onChange={(e) => {
+          e.stopPropagation();
+          handleImageUpload({
+            file: e.target.files[0],
+            canvas: fabricRef,
+            shapeRef,
+          })
+        }}
+      />
     </div>
   )
 }

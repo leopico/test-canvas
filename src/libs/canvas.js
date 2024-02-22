@@ -70,9 +70,9 @@ export const handleCanvaseMouseMove = ({
 
   // depending on the selected shape, set the dimensions of the shape stored in shapeRef in previous step of handelCanvasMouseDown
   // calculate shape dimensions based on pointer coordinates
-  switch (selectedShapeRef?.current) {
+  switch (selectedShapeRef.current) {
     case "image":
-      shapeRef.current?.set({
+      shapeRef.current.set({
         width: pointer.x - (shapeRef.current?.left || 0),
         height: pointer.y - (shapeRef.current?.top || 0),
       });
